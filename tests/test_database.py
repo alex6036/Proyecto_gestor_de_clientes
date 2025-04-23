@@ -1,4 +1,4 @@
-#gestor/tests/test_database.py
+#tests/test_database.py
 import sys
 import os
 

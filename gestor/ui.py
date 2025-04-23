@@ -1,11 +1,11 @@
 # gestor/ui.py
 from tkinter import *
 from tkinter import ttk
-from tkinter.messagebox import askokcancel, WARNING
-from gestor import database as db
-from gestor import helpers
-from gestor import config
-from gestor import controllers
+from tkinter.messagebox import askokcancel, WARNING, showwarning
+from . import database as db
+from . import helpers
+from . import config
+from . import controllers
 
 class CenterWidgetMixin:
     def center(self):
@@ -177,10 +177,11 @@ class MainWindow(Tk, CenterWidgetMixin):
         frame = Frame(self)
         frame.pack()
 
-        # Treeview
+        # Scrollbar
         scrollbar = Scrollbar(frame)
         scrollbar.pack(side=RIGHT, fill=Y)
 
+        # Treeview
         treeview = ttk.Treeview(frame, yscrollcommand=scrollbar.set)
         treeview['columns'] = config.TREEVIEW_COLUMNS
 
@@ -218,7 +219,6 @@ class MainWindow(Tk, CenterWidgetMixin):
         if self.treeview.focus():
             EditClientWindow(self)
         else:
-            from tkinter.messagebox import showwarning
             showwarning("Advertencia", "Por favor, seleccione un cliente para modificar.")
 
     def delete(self):
@@ -233,6 +233,7 @@ class MainWindow(Tk, CenterWidgetMixin):
             if confirmar:
                 self.treeview.delete(cliente)
                 controllers.ClienteController.borrar(campos[0])
+                self.refresh_treeview()
 
     def refresh_treeview(self):
         # Limpiar el Treeview
@@ -244,3 +245,8 @@ class MainWindow(Tk, CenterWidgetMixin):
                 parent='', index='end', iid=cliente.dni,
                 values=(cliente.dni, cliente.nombre, cliente.apellido)
             )
+
+# No necesitamos este bloque porque run.py se encarga de iniciar la aplicación
+# if __name__ == "__main__":
+#     app = MainWindow()
+#     app.mainloop()
